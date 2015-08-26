@@ -39,6 +39,7 @@ export PROMPT="$PROMPT$(git-radar --zsh --fetch) "
 ```
 
 **fish**
+
 Add to your `config.fish`
 ```bash
 function fish_prompt
