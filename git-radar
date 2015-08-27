@@ -82,7 +82,7 @@ while [[ $# > 0 ]];do
   if [[ "$command" == "--zsh" ]]; then
     $dot/prompt.zsh
   fi
-  if [[ "$command" == "--bash" ]]; then
+  if [[ "$command" == "--bash" || "$command" == "--fish" ]]; then
     $dot/prompt.bash
   fi
 done
