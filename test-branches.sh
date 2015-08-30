@@ -1,3 +1,4 @@
+#!/bin/bash
 scriptDir="$(cd "$(dirname "$0")"; pwd)"
 
 source "$scriptDir/radar-base.sh"
@@ -94,7 +95,7 @@ test_remote_branch_name_quiet_when_not_in_repo() {
 
   echo "$debug_output"
 
-  assertEquals "       0" "$usages"
+  assertEquals "0" "$usages"
 
   rm_tmp
 }

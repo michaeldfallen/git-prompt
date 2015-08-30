@@ -1,3 +1,4 @@
+#!/bin/bash
 scriptDir="$(cd "$(dirname "$0")"; pwd)"
 
 source "$scriptDir/radar-base.sh"
@@ -63,7 +64,8 @@ test_record_timestamp_in_repo() {
 
 test_time_to_update_when_timestamp_is_old() {
   cd $scriptDir
-  touch -A "-010000" "$(dot_git)/lastupdatetime"
+  newtimestamp=$(date -d "now -1 hour" +%Y%m%d%H%M)
+  touch -t $newtimestamp "$(dot_git)/lastupdatetime"
   assertTrue time_to_update
 }
 

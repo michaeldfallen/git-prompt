@@ -62,7 +62,7 @@ record_timestamp() {
 
 timestamp() {
   if is_repo; then
-    printf '%s' "$(stat -f%m "$(dot_git)/lastupdatetime" 2>/dev/null || printf '%s' "0")"
+    printf '%s' "$(stat -c %Y "$(dot_git)/lastupdatetime" 2>/dev/null || printf '%s' "0")"
   fi
 }
 
