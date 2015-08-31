@@ -137,6 +137,14 @@ export PS1="$PS1\$(git-radar --bash --fetch)"
 export PROMPT="$PROMPT$(git-radar --zsh --fetch) "
 ```
 
+### Commits Prefix
+
+By default, ` git:` will be used as the prefix for git-radar's prompt.
+You can set `GIT_RADAR_COMMITS_PREFIX` as an ENV variable
+with any prefix that you like. For example: `export GIT_RADAR_COMMITS_PREFIX="my-git:"`.
+
+If you don't want git-radar to show a prefix you can always set this ENV variable to `""`.
+
 ## License
 
 Git Radar is licensed under the MIT license.

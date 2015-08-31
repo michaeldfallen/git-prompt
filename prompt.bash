@@ -2,10 +2,16 @@
 
 dot="$(cd "$(dirname "$0")"; pwd)"
 args=$@
+commits_prefix=" git:"
 source "$dot/radar-base.sh"
 
 if is_repo; then
-  printf " \x01\033[1;30m\x02git:(\x01\033[0m\x02"
+  # using parameter expasion to allow the ENV variable to be set to empty ("")
+  # see: http://www.gnu.org/software/bash/manual/bashref.html#Shell-Parameter-Expansion
+  if [ ${GIT_RADAR_COMMITS_PREFIX+x} ]; then
+    commits_prefix=$GIT_RADAR_COMMITS_PREFIX
+  fi
+  printf "\x01\033[1;30m\x02$commits_prefix(\x01\033[0m\x02"
   if show_remote_status $args; then
     bash_color_remote_commits
   fi
