@@ -1,3 +1,5 @@
+unset GREP_OPTIONS # ensure default behaviour of grep command
+
 NO_REMOTE_STATUS='--no-remote-status'
 
 dot_git=""
