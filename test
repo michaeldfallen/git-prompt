@@ -1,7 +1,9 @@
 #!/bin/sh
 
+./test-radar-base.sh
 ./test-directories.sh
 ./test-commits.sh
 ./test-branches.sh
 ./test-files.sh
 ./test-status.sh
+./test-colors.sh
