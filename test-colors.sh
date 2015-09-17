@@ -1,3 +1,4 @@
+#!/bin/bash
 scriptDir="$(cd "$(dirname "$0")"; pwd)"
 
 source "$scriptDir/radar-base.sh"
@@ -296,7 +297,7 @@ test_bash_colors_local() {
   assertEquals "$expected" "$(color_local_commits)"
 
   git push --quiet >/dev/null
-  git reset --hard head^ --quiet >/dev/null
+  git reset --hard HEAD^ --quiet >/dev/null
 
   printf -v expected " 1\x01local-behind\x02↓\x01local-reset\x02"
   assertEquals "$expected" "$(bash_color_local_commits)"
@@ -340,7 +341,7 @@ test_zsh_colors_local() {
   assertEquals " 1%{local-ahead%}↑%{local-reset%}" "$(zsh_color_local_commits)"
 
   git push --quiet >/dev/null
-  git reset --hard head^ --quiet >/dev/null
+  git reset --hard HEAD^ --quiet >/dev/null
 
   assertEquals " 1%{local-behind%}↓%{local-reset%}" "$(zsh_color_local_commits)"
 
@@ -376,7 +377,7 @@ test_bash_colors_remote() {
   git push --quiet -u origin master >/dev/null
   repoLocation="$(pwd)"
 
-  git reset --hard head^ --quiet >/dev/null
+  git reset --hard HEAD^ --quiet >/dev/null
   git checkout -b mybranch --quiet
   git push --quiet -u origin mybranch >/dev/null
 
@@ -387,7 +388,7 @@ test_bash_colors_remote() {
   echo "bar" > bar
   git add .
   git commit -m "new commit" --quiet
-  git push --quiet >/dev/null
+  git push --quiet origin mybranch  >/dev/null
 
   printf -v expected "m 1 \x01remote-diverged\x02⇄\x01remote-reset\x02 1 "
   assertEquals "$expected" "$(bash_color_remote_commits)"
@@ -426,7 +427,7 @@ test_zsh_colors_remote() {
   git push --quiet -u origin master >/dev/null
   repoLocation="$(pwd)"
 
-  git reset --hard head^ --quiet >/dev/null
+  git reset --hard HEAD^ --quiet >/dev/null
   git checkout -b mybranch --quiet
   git push --quiet -u origin mybranch >/dev/null
 

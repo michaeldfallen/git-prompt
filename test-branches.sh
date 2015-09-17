@@ -97,8 +97,13 @@ test_remote_branch_name_quiet_when_not_in_repo() {
 
   echo "$debug_output"
 
-  assertEquals "0" "$usages"
-
+  if [[ $OSTYPE == darwin* ]];then 
+  	expected="       0"
+  else
+    expected="0"
+  fi;
+  assertEquals "$expected" "$usages"
+  
   rm_tmp
 }
 

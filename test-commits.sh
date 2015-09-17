@@ -296,7 +296,12 @@ test_dont_call_remote_branch_name() {
   usages="$(echo "$debug_output" | grep 'remote_branch_name' | wc -l )"
 
   #wc -l has a weird output
-  assertEquals "0" "$usages"
+  if [[ $OSTYPE == darwin* ]];then 
+  	expected="       0"
+  else
+    expected="0"
+  fi;
+  assertEquals "$expected" "$usages"
 
   rm_tmp
 }
@@ -320,7 +325,12 @@ test_dont_remote_if_remote_is_master() {
 
   usages="$(echo "$debug_output" | grep 'git rev-list' | wc -l )"
 
-  assertEquals "0" "$usages"
+	if [[ $OSTYPE == darwin* ]];then 
+  	expected="       0"
+  else
+    expected="0"
+  fi;
+  assertEquals "$expected" "$usages"
 
   rm_tmp
 }
