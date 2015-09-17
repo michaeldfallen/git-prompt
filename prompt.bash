@@ -6,12 +6,12 @@ source "$dot/radar-base.sh"
 
 if is_repo; then
   prepare_bash_colors
-  printf " \x01\033[1;30m\x02git:(\x01\033[0m\x02"
+  printf "${COLOR_GIT_WRAPPER}git:(${RESET_COLOR_WRAPPER}"
   if show_remote_status $args; then
     color_remote_commits
   fi
   readable_branch_name
   color_local_commits
-  printf "\x01\033[1;30m\x02)\x01\033[0m\x02"
+  printf "${COLOR_GIT_WRAPPER})${RESET_COLOR_WRAPPER}"
   color_changes_status
 fi

@@ -329,6 +329,18 @@ All these values should be set using a the correct colour code for your
 terminal. You should also choose the colour code based on what shell you are
 using. There is a way to support [colouring multiple shells using rc files](#setting-an-rc-file).
 
+##### Colouring the Wrapper part
+**GIT_RADAR_COLOR_GIT_WRAPPER='[colour code]'**
+```
+git:(my-branch)
+^^^^^         ^
+```
+The colour to use for the wrapper surrounding git status information
+
+It is unset by
+`GIT_RADAR_COLOR_WRAPPER_RESET` which you can set if you want a different
+background colour to return to.
+
 ##### Colouring the Branch part
 
 **GIT_RADAR_COLOR_BRANCH='[colour code]'**
