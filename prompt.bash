@@ -14,4 +14,5 @@ if is_repo; then
   color_local_commits
   printf "\x01\033[1;30m\x02)\x01\033[0m\x02"
   color_changes_status
+  stash_status
 fi
