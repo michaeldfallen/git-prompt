@@ -410,9 +410,9 @@ test_local_commits() {
   git add .
   git commit -m "test commit" --quiet
 
-  assertEquals " 1$up" "$(zsh_color_local_commits)"
-  assertEquals " 1$up" "$(bash_color_local_commits)"
-  assertEquals " 1$up" "$(color_local_commits)"
+  assertEquals "1$up" "$(zsh_color_local_commits)"
+  assertEquals "1$up" "$(bash_color_local_commits)"
+  assertEquals "1$up" "$(color_local_commits)"
 
   cd "$remote"
   echo "foo" > foo
@@ -422,15 +422,15 @@ test_local_commits() {
   cd "$repo"
   git fetch origin --quiet
 
-  assertEquals " 1${both}1" "$(zsh_color_local_commits)"
-  assertEquals " 1${both}1" "$(bash_color_local_commits)"
-  assertEquals " 1${both}1" "$(color_local_commits)"
+  assertEquals "1${both}1" "$(zsh_color_local_commits)"
+  assertEquals "1${both}1" "$(bash_color_local_commits)"
+  assertEquals "1${both}1" "$(color_local_commits)"
 
   git reset --hard HEAD^ --quiet
 
-  assertEquals " 1$down" "$(zsh_color_local_commits)"
-  assertEquals " 1$down" "$(bash_color_local_commits)"
-  assertEquals " 1$down" "$(color_local_commits)"
+  assertEquals "1$down" "$(zsh_color_local_commits)"
+  assertEquals "1$down" "$(bash_color_local_commits)"
+  assertEquals "1$down" "$(color_local_commits)"
 }
 
 . ./shunit/shunit2
