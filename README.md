@@ -215,13 +215,14 @@ Git Radar is highly customisable using a prompt format string. The 4 features
 above: remote commits, local commits, branch and file changes; are controlled
 by the prompt format string.
 
-Feature        | Control string
----------------|---------------
-Remote commits | `%{remote}`
-Local commits  | `%{local}`
-Branch         | `%{branch}`
-File changes   | `%{changes}`
-Stashes        | `%{stash}`
+Feature                    | Control string
+---------------------------|---------------
+Remote commits             | `%{remote}`
+Local commits              | `%{local}`
+Branch                     | `%{branch}`
+File changes               | `%{changes}`
+Stashes                    | `%{stash}`
+Relative path in the repo  | `%{git_path}`
 
 You can create any prompt shape you prefer by exporting `GIT_RADAR_FORMAT` with
 your preferred shape. The control strings above will be replaced with the output

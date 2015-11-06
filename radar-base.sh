@@ -543,6 +543,10 @@ stash_status() {
   fi
 }
 
+git_path() {
+  printf '%s' "$(basename `git rev-parse --show-toplevel`)/$(git rev-parse --show-prefix)"
+}
+
 render_prompt() {
   output="$PROMPT_FORMAT"
   branch_sed=""
@@ -550,7 +554,7 @@ render_prompt() {
   local_sed=""
   changes_sed=""
   stash_sed=""
-
+  git_path_sed=""
 
   if_pre="%\{([^%{}]{1,}:){0,1}"
   if_post="(:[^%{}]{1,}){0,1}\}"
@@ -597,11 +601,20 @@ render_prompt() {
       stash_sed="s/${sed_pre}stash${sed_post}//"
     fi
   fi
+  if [[ $PROMPT_FORMAT =~ ${if_pre}git_path${if_post} ]]; then
+    git_path_result="$(git_path | sed -e 's/[\/&]/\\&/g')"
+    if [[ -n "git_path_result" ]]; then
+      git_path_sed="s/${sed_pre}git_path${sed_post}/\2${git_path_result}\4/"
+    else
+      git_path_sed="s/${sed_pre}git_path${sed_post}//"
+    fi
+  fi
 
   printf '%b' "$output" | sed \
                             -e "$remote_sed" \
                             -e "$branch_sed" \
                             -e "$changes_sed" \
                             -e "$local_sed" \
-                            -e "$stash_sed"
+                            -e "$stash_sed" \
+                            -e "$git_path_sed"
 }
