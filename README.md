@@ -1,5 +1,7 @@
 # Git Radar
 
+[![Join the chat at https://gitter.im/michaeldfallen/git-radar](https://badges.gitter.im/michaeldfallen/git-radar.svg)](https://gitter.im/michaeldfallen/git-radar?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 A heads up display for git.
 
 ![An example of git-radar]
