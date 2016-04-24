@@ -14,6 +14,20 @@ timethis() {
   echo "$1 - $dur" >> $HOME/duration.dat
 }
 
+get_fetch_time() {
+  if [ -f "$rcfile_path/.gitradarrc.bash" ]; then
+    source "$rcfile_path/.gitradarrc.bash"
+  elif [ -f "$rcfile_path/.gitradarrc.zsh" ]; then
+    source "$rcfile_path/.gitradarrc.zsh"
+  elif [ -f "$rcfile_path/.gitradarrc" ]; then
+    source "$rcfile_path/.gitradarrc"
+  fi
+
+  FETCH_TIME="${GIT_RADAR_FETCH_TIME:-"$((5 * 60))"}"
+  echo $FETCH_TIME
+
+}
+
 prepare_bash_colors() {
   if [ -f "$rcfile_path/.gitradarrc.bash" ]; then
     source "$rcfile_path/.gitradarrc.bash"
@@ -49,7 +63,7 @@ prepare_bash_colors() {
   RESET_COLOR_CHANGES="\x01${GIT_RADAR_COLOR_CHANGES_RESET:-"\\033[0m"}\x02"
   RESET_COLOR_BRANCH="\x01${GIT_RADAR_COLOR_BRANCH_RESET:-"\\033[0m"}\x02"
   RESET_COLOR_STASH="\x01${GIT_RADAR_COLOR_STASH:-"\\033[0m"}\x02"
-  
+
 }
 
 prepare_zsh_colors() {
@@ -76,7 +90,7 @@ prepare_zsh_colors() {
   COLOR_CHANGES_UNTRACKED="%{${GIT_RADAR_COLOR_CHANGES_UNTRACKED:-$fg_bold[white]}%}"
 
   COLOR_STASH="%{${GIT_RADAR_COLOR_STASH:-$fg_bold[yellow]}%}"
-  
+
   local italic_m="$(printf '\xF0\x9D\x98\xAE')"
 
   COLOR_BRANCH="%{${GIT_RADAR_COLOR_BRANCH:-$reset_color}%}"
@@ -174,10 +188,10 @@ time_now() {
 }
 
 time_to_update() {
+  last_time_updated="${1:-$FETCH_TIME}"
   if is_repo; then
     local timesincelastupdate="$(($(time_now) - $(timestamp)))"
-    local fiveminutes="$((5 * 60))"
-    if (( $timesincelastupdate > $fiveminutes )); then
+    if (( $timesincelastupdate > $last_time_updated )); then
       # time to update return 0 (which is true)
       return 0
     else
@@ -190,7 +204,10 @@ time_to_update() {
 }
 
 fetch() {
-  if time_to_update; then
+  # Gives $FETCH_TIME a value
+  get_fetch_time
+
+  if time_to_update $FETCH_TIME; then
     record_timestamp
     git fetch --quiet > /dev/null 2>&1
   fi
@@ -219,22 +236,25 @@ branch_ref() {
 }
 
 remote_branch_name() {
-  local localRef="\/$(branch_name)$"
-  if [[ -n "$localRef" ]]; then
-    local remoteBranch="$(git for-each-ref --format='%(upstream:short)' refs/heads $localRef 2>/dev/null | grep $localRef)"
+  local localRef="$(branch_name)"
+  local remote="$(git config --get "branch.$localRef.remote")"
+  if [[ -n $remote ]]; then
+    local remoteBranch="$(git config --get "branch.${localRef}.merge" | sed -e 's/^refs\/heads\///')"
     if [[ -n $remoteBranch ]]; then
-      printf '%s' $remoteBranch
+      printf '%s/%s' $remote $remoteBranch
       return 0
     else
-      return 1
+        return 1
     fi
+  else
+    return 1
   fi
 }
 
 commits_behind_of_remote() {
   remote_branch=${1:-"$(remote_branch_name)"}
   if [[ -n "$remote_branch" ]]; then
-    git rev-list --left-only --count ${remote_branch}...HEAD
+    git rev-list --left-only --count ${remote_branch}...HEAD 2>/dev/null
   else
     printf '%s' "0"
   fi
@@ -243,7 +263,7 @@ commits_behind_of_remote() {
 commits_ahead_of_remote() {
   remote_branch=${1:-"$(remote_branch_name)"}
   if [[ -n "$remote_branch" ]]; then
-    git rev-list --right-only --count ${remote_branch}...HEAD
+    git rev-list --right-only --count ${remote_branch}...HEAD 2>/dev/null
   else
     printf '%s' "0"
   fi
@@ -521,10 +541,16 @@ stashed_status() {
   printf '%s' "$(git stash list | wc -l 2>/dev/null | grep -oEi '[0-9][0-9]*')"
 }
 
+is_cwd_a_dot_git_directory() {
+  [[ "$(basename $PWD)" == ".git" ]]; return $?
+}
+
 stash_status() {
-  local number_stashes="$(stashed_status)"
-  if [ $number_stashes -gt 0 ]; then
-    printf $PRINT_F_OPTION "$number_stashes$COLOR_STASH≡$RESET_COLOR_STASH"
+  if ! is_cwd_a_dot_git_directory; then
+    local number_stashes="$(stashed_status)"
+    if [ $number_stashes -gt 0 ]; then
+      printf $PRINT_F_OPTION "${number_stashes}${COLOR_STASH}≡${RESET_COLOR_STASH}"
+    fi
   fi
 }
 
@@ -551,7 +577,7 @@ render_prompt() {
     fi
   fi
   if [[ $PROMPT_FORMAT =~ ${if_pre}branch${if_post} ]]; then
-    branch_result="$(readable_branch_name | sed -e 's/\//\\\//')"
+    branch_result="$(readable_branch_name | sed -e 's/\//\\\//g')"
     if [[ -n "$branch_result" ]]; then
       branch_sed="s/${sed_pre}branch${sed_post}/\2${branch_result}\4/"
     else
