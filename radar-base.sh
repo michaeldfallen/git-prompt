@@ -537,11 +537,17 @@ stashed_status() {
 }
 
 is_cwd_a_dot_git_directory() {
-  [[ "$(basename $PWD)" == ".git" ]]; return $?
+  if [[ "${1##*/}" == ".git" ]]; then
+    return 0
+  elif [[ -z $1 ]]; then
+    return 1
+  else
+    is_cwd_a_dot_git_directory ${1%/*}
+  fi
 }
 
 stash_status() {
-  if ! is_cwd_a_dot_git_directory; then
+  if ! is_cwd_a_dot_git_directory $PWD; then
     local number_stashes="$(stashed_status)"
     if [ $number_stashes -gt 0 ]; then
       printf $PRINT_F_OPTION "${number_stashes}${COLOR_STASH}≡${RESET_COLOR_STASH}"
