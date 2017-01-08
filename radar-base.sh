@@ -25,7 +25,6 @@ get_fetch_time() {
 
   FETCH_TIME="${GIT_RADAR_FETCH_TIME:-"$((5 * 60))"}"
   echo $FETCH_TIME
-
 }
 
 prepare_bash_colors() {
@@ -410,8 +409,33 @@ untracked_status() {
   printf '%s' "$untracked_string"
 }
 
+async_or_not() {
+  local function_to_run="$1"
+
+  GIT_RADAR_ASYNC_EXEC=${GIT_RADAR_ASYNC_EXEC:-false}
+  if $GIT_RADAR_ASYNC_EXEC; then
+    local file="$(dot_git)/async_git_radar_$1"
+
+    GIT_RADAR_REDRAW=${GIT_RADAR_REDRAW:-false}
+    if ! $GIT_RADAR_REDRAW; then
+      (
+        output="$($function_to_run)"
+        printf '%s' "$output" > $file
+        kill -s USR1 "$GIT_RADAR_ZSH_PID" # Tell the parent we are finished
+      ) > /dev/null &
+    fi
+
+    if [[ -f $file ]]; then
+      cat $file
+    fi
+  else
+    eval $function_to_run
+  fi
+}
+
 color_changes_status() {
-  local separator="${1:- }"
+  local parent_pid="$1"
+  local separator="${2:- }"
 
   local porcelain="$(porcelain_status)"
   local changes=""
@@ -439,6 +463,7 @@ color_changes_status() {
 
     changes="$staged_changes$conflicted_changes$unstaged_changes$untracked_changes"
   fi
+
   printf $PRINT_F_OPTION "${changes:1}"
 }
 
@@ -564,7 +589,7 @@ render_prompt() {
   sed_post="\(\:\([^%^{^}]*\)\)\{0,1\}}"
 
   if [[ $output =~ ${if_pre}remote${if_post} ]]; then
-    remote_result="$(color_remote_commits)"
+    remote_result="$(async_or_not "color_remote_commits")"
     if [[ -n "$remote_result" ]]; then
       remote_sed="s/${sed_pre}remote${sed_post}/\2${remote_result}\4/"
     else
@@ -572,7 +597,7 @@ render_prompt() {
     fi
   fi
   if [[ $PROMPT_FORMAT =~ ${if_pre}branch${if_post} ]]; then
-    branch_result="$(readable_branch_name | sed -e 's/\//\\\//g')"
+    branch_result="$(async_or_not "readable_branch_name" | sed -e 's/\//\\\//g')"
     if [[ -n "$branch_result" ]]; then
       branch_sed="s/${sed_pre}branch${sed_post}/\2${branch_result}\4/"
     else
@@ -580,7 +605,7 @@ render_prompt() {
     fi
   fi
   if [[ $PROMPT_FORMAT =~ ${if_pre}local${if_post} ]]; then
-    local_result="$(color_local_commits)"
+    local_result="$(async_or_not "color_local_commits")"
     if [[ -n "$local_result" ]]; then
       local_sed="s/${sed_pre}local${sed_post}/\2$local_result\4/"
     else
@@ -588,7 +613,7 @@ render_prompt() {
     fi
   fi
   if [[ $PROMPT_FORMAT =~ ${if_pre}changes${if_post} ]]; then
-    changes_result="$(color_changes_status)"
+    changes_result="$(async_or_not "color_changes_status")"
     if [[ -n "$changes_result" ]]; then
       changes_sed="s/${sed_pre}changes${sed_post}/\2${changes_result}\4/"
     else
@@ -596,7 +621,7 @@ render_prompt() {
     fi
   fi
   if [[ $PROMPT_FORMAT =~ ${if_pre}stash${if_post} ]]; then
-    stash_result="$(stash_status)"
+    stash_result="$(async_or_not "stash_status")"
     if [[ -n "$stash_result" ]]; then
       stash_sed="s/${sed_pre}stash${sed_post}/\2${stash_result}\4/"
     else
