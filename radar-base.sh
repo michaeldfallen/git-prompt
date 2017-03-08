@@ -337,6 +337,7 @@ staged_status() {
   local filesDeleted="$(printf '%s' "$gitStatus" | grep -oE "D[AMCR ] " | wc -l | grep -oEi '[1-9][0-9]*')"
   local filesRenamed="$(printf '%s' "$gitStatus" | grep -oE "R[AMCD ] " | wc -l | grep -oEi '[1-9][0-9]*')"
   local filesCopied="$(printf '%s' "$gitStatus" | grep -oE "C[AMDR ] " | wc -l | grep -oEi '[1-9][0-9]*')"
+  local typeChanged="$(printf '%s' "$gitStatus" | grep -oE "T[AMDR ] " | wc -l | grep -oEi '[1-9][0-9]*')"
 
   if [ -n "$filesAdded" ]; then
     staged_string="$staged_string$filesAdded${prefix}A${suffix}"
@@ -352,6 +353,9 @@ staged_status() {
   fi
   if [ -n "$filesCopied" ]; then
     staged_string="$staged_string$filesCopied${prefix}C${suffix}"
+  fi
+  if [ -n "$typeChanged" ]; then
+    staged_string="$staged_string$typeChanged${prefix}TC${suffix}"
   fi
   printf '%s' "$staged_string"
 }
@@ -386,12 +390,16 @@ unstaged_status() {
 
   local filesModified="$(printf '%s' "$gitStatus" | grep -oE "[ACDRM ]M " | wc -l | grep -oEi '[1-9][0-9]*')"
   local filesDeleted="$(printf '%s' "$gitStatus" | grep -oE "[AMCR ]D " | wc -l | grep -oEi '[1-9][0-9]*')"
+  local typeChanged="$(printf '%s' "$gitStatus" | grep -oE "[AMDR ]T " | wc -l | grep -oEi '[1-9][0-9]*')"
 
   if [ -n "$filesDeleted" ]; then
     unstaged_string="$unstaged_string$filesDeleted${prefix}D${suffix}"
   fi
   if [ -n "$filesModified" ]; then
     unstaged_string="$unstaged_string$filesModified${prefix}M${suffix}"
+  fi
+  if [ -n "$typeChanged" ]; then
+    unstaged_string="$unstaged_string$typeChanged${prefix}TC${suffix}"
   fi
   printf '%s' "$unstaged_string"
 }
