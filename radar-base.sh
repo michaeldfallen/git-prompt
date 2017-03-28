@@ -542,7 +542,7 @@ stashed_status() {
 }
 
 is_cwd_a_dot_git_directory() {
-  [[ "$(basename $PWD)" == ".git" ]]; return $?
+  [[ "$(basename "$PWD")" == ".git" ]]; return $?
 }
 
 stash_status() {
