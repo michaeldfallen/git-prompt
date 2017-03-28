@@ -1,3 +1,4 @@
+#!/bin/bash
 scriptDir="$(cd "$(dirname "$0")"; pwd)"
 
 source "$scriptDir/radar-base.sh"
@@ -24,7 +25,7 @@ test_untracked_files() {
   touch foo
   assertEquals "1A" "$(untracked_status)"
 
-  git add .
+  git add --all
   assertEquals "" "$(untracked_status)"
 
   rm_tmp
@@ -38,7 +39,7 @@ test_unstaged_modified_files() {
 
   touch foo
   touch bar
-  git add .
+  git add --all
   git commit -m "foo and bar" >/dev/null
 
   echo "foo" >> foo
@@ -58,7 +59,7 @@ test_unstaged_deleted_files() {
 
   touch foo
   touch bar
-  git add .
+  git add --all
   git commit -m "foo and bar" >/dev/null
 
   rm foo
@@ -77,11 +78,11 @@ test_staged_added_files() {
   assertEquals "" "$(staged_status)"
 
   touch foo
-  git add .
+  git add --all
   assertEquals "1A" "$(staged_status)"
 
   touch bar
-  git add .
+  git add --all
   assertEquals "2A" "$(staged_status)"
 
   rm_tmp
@@ -95,15 +96,15 @@ test_staged_modified_files() {
 
   touch foo
   touch bar
-  git add .
+  git add --all
   git commit -m "foo and bar" >/dev/null
 
   echo "foo" >> foo
-  git add .
+  git add --all
   assertEquals "1M" "$(staged_status)"
 
   echo "bar" >> bar
-  git add .
+  git add --all
   assertEquals "2M" "$(staged_status)"
 
   rm_tmp
@@ -117,15 +118,15 @@ test_staged_deleted_files() {
 
   touch foo
   touch bar
-  git add .
+  git add --all
   git commit -m "foo and bar" >/dev/null
 
   rm foo
-  git add .
+  git add --all
   assertEquals "1D" "$(staged_status)"
 
   rm bar
-  git add .
+  git add --all
   assertEquals "2D" "$(staged_status)"
 
   rm_tmp
@@ -139,15 +140,15 @@ test_staged_renamed_files() {
 
   touch foo
   touch bar
-  git add .
+  git add --all
   git commit -m "foo and bar" >/dev/null
 
   mv foo foo2
-  git add .
+  git add --all
   assertEquals "1R" "$(staged_status)"
 
   mv bar bar2
-  git add .
+  git add --all
   assertEquals "2R" "$(staged_status)"
 
   rm_tmp
@@ -159,17 +160,17 @@ test_conflicted_both_changes() {
 
   git checkout -b foo --quiet
   echo "foo" >> foo
-  git add .
+  git add --all
   git commit -m "foo" --quiet
 
   git checkout -b foo2 --quiet
   echo "bar" >> foo
-  git add .
+  git add --all
   git commit -m "bar" --quiet
 
   git checkout foo --quiet
   echo "foo2" >> foo
-  git add .
+  git add --all
   git commit -m "foo2" --quiet
 
   assertEquals "" "$(conflicted_status)"
@@ -187,17 +188,17 @@ test_conflicted_them_changes() {
 
   git checkout -b foo --quiet
   echo "foo" >> foo
-  git add .
+  git add --all
   git commit -m "foo" --quiet
 
   git checkout -b foo2 --quiet
   rm foo
-  git add .
+  git add --all
   git commit -m "delete foo" --quiet
 
   git checkout foo --quiet
   echo "foo2" >> foo
-  git add .
+  git add --all
   git commit -m "foo2" --quiet
 
   assertEquals "" "$(conflicted_status)"
@@ -215,17 +216,17 @@ test_conflicted_us_changes() {
 
   git checkout -b foo --quiet
   echo "foo" >> foo
-  git add .
+  git add --all
   git commit -m "foo" --quiet
 
   git checkout -b foo2 --quiet
   echo "bar" >> foo
-  git add .
+  git add --all
   git commit -m "bar" --quiet
 
   git checkout foo --quiet
   rm foo
-  git add .
+  git add --all
   git commit -m "delete foo" --quiet
 
   assertEquals "" "$(conflicted_status)"
@@ -254,7 +255,7 @@ test_is_dirty() {
 
   cd ../
 
-  git add .
+  git add --all
   assertTrue "staged addition files" is_dirty
 
   git commit -m "inital commit" --quiet
@@ -264,7 +265,7 @@ test_is_dirty() {
   echo "foo" >> foo
   assertTrue "modified file unstaged" is_dirty
 
-  git add .
+  git add --all
   assertTrue "modified file staged" is_dirty
 
   rm_tmp

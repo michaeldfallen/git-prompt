@@ -1,3 +1,4 @@
+#!/bin/bash
 scriptDir="$(cd "$(dirname "$0")"; pwd)"
 
 source "$scriptDir/radar-base.sh"
@@ -14,7 +15,6 @@ rm_tmp() {
   cd $scriptDir
   rm -rf /tmp/git-prompt-tests*
 }
-
 test_commits_with_no_commits() {
   cd_to_tmp
   git init --quiet
@@ -222,7 +222,6 @@ test_remote_branch_starts_with_local_branch_name() {
 
   rm_tmp
 }
-
 test_remote_branch_ends_with_local_branch_name() {
   cd_to_tmp "remote"
   git init --bare --quiet
@@ -297,11 +296,15 @@ test_dont_call_remote_branch_name() {
   usages="$(echo "$debug_output" | grep 'remote_branch_name' | wc -l )"
 
   #wc -l has a weird output
-  assertEquals "       0" "$usages"
+  if [[ $OSTYPE == darwin* ]];then 
+  	expected="       0"
+  else
+    expected="0"
+  fi;
+  assertEquals "$expected" "$usages"
 
   rm_tmp
 }
-
 test_dont_remote_if_remote_is_master() {
   cd_to_tmp
   git init --quiet
@@ -322,7 +325,12 @@ test_dont_remote_if_remote_is_master() {
 
   usages="$(echo "$debug_output" | grep 'git rev-list' | wc -l )"
 
-  assertEquals "       0" "$usages"
+	if [[ $OSTYPE == darwin* ]];then 
+  	expected="       0"
+  else
+    expected="0"
+  fi;
+  assertEquals "$expected" "$usages"
 
   rm_tmp
 }
