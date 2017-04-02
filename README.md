@@ -255,6 +255,24 @@ The default prompt format uses this to add spaces only if the feature would
 render. In that way the prompt always looks well spaced out no matter how many
 features are rendering.
 
+### Prefixing and Suffixing the Full git-radar Prompt
+
+It may be that we want our git-radar prompt to be prefixed or suffixed by some
+string of characters, but only when you are in a repository.
+
+To do this, use the built in variables that can be assigned in a .gitradarrc
+file.
+
+For example:
+
+```bash
+GIT_RADAR_PROMPT_SUFFIX=" >> "
+GIT_RADAR_PROMPT_PREFIX=" << "
+```
+
+This will produce a prompt like this: `<< git:(master) >>`, where `<<` and `>>`
+only show, if we are actually in a git repository.
+
 
 ## Support
 
