@@ -100,7 +100,11 @@ while [[ $# > 0 ]];do
     $dot/prompt.zsh $args
   fi
 
-  if [[ "$command" == "--bash" || "$command" == "--fish" ]]; then
+  if [[ "$command" == "--bash" ]]; then
     $dot/prompt.bash $args
+  fi
+
+  if [[ "$command" == "--fish" ]]; then
+    $dot/prompt_fish.bash $args
   fi
 done
