@@ -105,6 +105,8 @@ prepare_zsh_colors() {
   RESET_COLOR_STASH="%{${GIT_RADAR_COLOR_STASH:-$reset_color}%}"
 }
 
+source "$dot/tmux-colors.bash"
+
 in_current_dir() {
   local wd="$(pwd)"
   if [[ "$wd" == $cwd ]]; then
