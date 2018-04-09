@@ -24,7 +24,6 @@ install: $(SOURCES)
 	cp prompt.zsh $(PREFIX)/bin
 	cp prompt.bash $(PREFIX)/bin
 	cp prompt-tmux.bash $(PREFIX)/bin
-	cp tmux-colors.bash $(PREFIX)/bin
 	cp fetch.sh $(PREFIX)/bin
 
 
@@ -35,5 +34,4 @@ develop: $(SOURCES)
 	ln -s $(PWD)/prompt.zsh $(PREFIX)/bin/prompt.zsh
 	ln -s $(PWD)/prompt.bash $(PREFIX)/bin/prompt.bash
 	ln -s $(PWD)/prompt-tmux.bash $(PREFIX)/bin/prompt-tmux.bash
-	ln -s $(PWD)/tmux-colors.bash $(PREFIX)/bin/tmux-colors.bash
 	ln -s $(PWD)/fetch.sh $(PREFIX)/bin/fetch.sh
