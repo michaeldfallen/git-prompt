@@ -264,9 +264,19 @@ commits_ahead_of_remote() {
   fi
 }
 
+determine_tracked_remote() {
+  by_branch=$(git config --local branch."$(git rev-parse --abbrev-ref HEAD)".git-radar-tracked-remote)
+  [[ ! -z $by_branch ]] && echo $by_branch && return 0
+
+  by_config=$(git config --local git-radar.tracked-remote)
+  [[ ! -z $by_config ]] && echo $by_config && return 0
+
+  echo "origin/master"
+}
+
 remote_behind_of_master() {
   remote_branch=${1:-"$(remote_branch_name)"}
-  tracked_remote="origin/master"
+  tracked_remote=$(determine_tracked_remote)
   if [[ -n "$remote_branch" && "$remote_branch" != "$tracked_remote" ]]; then
     git rev-list --left-only --count ${tracked_remote}...${remote_branch} 2>/dev/null || printf '%s' "0"
   else
@@ -276,7 +286,7 @@ remote_behind_of_master() {
 
 remote_ahead_of_master() {
   remote_branch=${1:-"$(remote_branch_name)"}
-  tracked_remote="origin/master"
+  tracked_remote=$(determine_tracked_remote)
   if [[ -n "$remote_branch" && "$remote_branch" != "$tracked_remote" ]]; then
     git rev-list --right-only --count ${tracked_remote}...${remote_branch} 2>/dev/null || printf '%s' "0"
   else
