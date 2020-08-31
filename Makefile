@@ -19,12 +19,12 @@ all:
 
 install: $(SOURCES)
 	@echo 'Installing in ' $(PREFIX)/bin
-	cp git-radar $(PREFIX)/bin
-	cp radar-base.sh $(PREFIX)/bin
-	cp prompt.zsh $(PREFIX)/bin
-	cp prompt.bash $(PREFIX)/bin
-	cp prompt-tmux.bash $(PREFIX)/bin
-	cp fetch.sh $(PREFIX)/bin
+	cp git-radar $(PREFIX)/bin/
+	cp radar-base.sh $(PREFIX)/bin/
+	cp prompt.zsh $(PREFIX)/bin/
+	cp prompt.bash $(PREFIX)/bin/
+	cp prompt-tmux.bash $(PREFIX)/bin/
+	cp fetch.sh $(PREFIX)/bin/
 
 
 develop: $(SOURCES)
