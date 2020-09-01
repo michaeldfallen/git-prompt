@@ -85,6 +85,13 @@ function fish_prompt
 end
 ```
 
+**Tmux**
+
+Add to your `.tmux.conf`
+```
+set -g status-left "#(git-radar --tmux)"
+```
+
 ## Features
 
 ### Files status

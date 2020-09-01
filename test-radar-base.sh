@@ -1,3 +1,5 @@
+#!/bin/sh
+
 scriptDir="$(cd "$(dirname "$0")"; pwd)"
 
 source "$scriptDir/radar-base.sh"
